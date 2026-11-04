@@ -141,9 +141,35 @@ See `android/DEPLOYMENT.md`: llama.cpp on Android is the recommended runtime; Qw
 
 ## Cloud / external storage (optional, off by default)
 
-Workspaces and laptops run out of space. `kivra/storage/connectors.py` provides optional connectors for **Supabase Storage, Dropbox, and Google Drive** so datasets and checkpoints can live off your local disk.
+Workspaces and laptops run out of space. `kivra/storage/connectors.py` plus `scripts/storage.py` let you offload datasets and checkpoints to **Supabase Storage, Dropbox, or Google Drive** — free tiers shown below.
 
-Nothing is uploaded automatically. Configure credentials (e.g. `KIVRA_STORAGE_BACKEND=supabase`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, bucket name) and call the connectors explicitly. See `docs/STORAGE.md`. All connectors are optional extras — install with `pip install -e ".[storage]"`.
+Nothing is uploaded automatically. Configure exactly one backend in `.env` (copy `.env.example`), then use the CLI:
+
+```bash
+# 1. Install optional SDKs
+pip install -e ".[storage]"
+
+# 2. Configure .env (one backend only)
+cp .env.example .env   # edit SUPABASE_URL / SUPABASE_SERVICE_KEY / bucket, etc.
+
+# 3. Load credentials and offload a checkpoint directory
+set -a; . .env; set +a
+python scripts/storage.py --backend supabase --bucket kivra-checkpoints upload runs/kivra-spark remote/kivra-spark
+
+# 4. List / download
+python scripts/storage.py --backend supabase --bucket kivra-checkpoints list remote/kivra-spark
+python scripts/storage.py --backend supabase --bucket kivra-checkpoints download remote/kivra-spark/adapter_model.safetensors restored.safetensors
+```
+
+| Backend | Free tier | Best for |
+|---|---|---|
+| Supabase Storage | 1 GB | LoRA adapters, small GGUF exports |
+| Dropbox | 2 GB | Datasets + adapters |
+| Google Drive | 15 GB (shared) | Datasets + adapters + small GGUF |
+
+Full base checkpoints (several GB each) are best re-downloaded from Hugging Face rather than mirrored, to respect redistribution terms and keep provenance clear.
+
+See `docs/STORAGE.md` and `scripts/storage.py --help`.
 
 ## Model cards
 
