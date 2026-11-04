@@ -1,0 +1,64 @@
+# Kivra — do not commit data, weights, or secrets
+
+# Bytecode / caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+env.bak/
+venv.bak/
+.tox/
+.coverage
+.coverage.*
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+secrets/
+*.key
+*.pem
+
+# Data & models (keep only data/demo.jsonl tracked)
+data/*
+!data/demo.jsonl
+*.jsonl
+!data/demo.jsonl
+
+runs/
+checkpoints/
+.kivra-smoke-test/
+adapters/
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.gguf
+*.q8_0
+*.q4_k_m
+*.cache
+
+# Hugging Face
+.huggingface/
+~/.cache/huggingface
+
+# Build
+dist/
+build/
+*.egg-info/
+.eggs/
