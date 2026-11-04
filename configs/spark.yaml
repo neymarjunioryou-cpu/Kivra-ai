@@ -1,0 +1,46 @@
+# Kivra Spark profile — phone target (~0.5B–1B, quantized for low-end Android)
+# Base: Qwen3-0.6B (Apache 2.0). QLoRA 4-bit fits on a single T4/16 GB GPU or slow CPU.
+profile: spark
+model:
+  base_model: "Qwen/Qwen3-0.6B-Base"
+  revision: null
+  trust_remote_code: false
+quantization:
+  load_in_4bit: true
+  bnb_4bit_compute_dtype: "float16"
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: true
+lora:
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  bias: "none"
+  task_type: "CAUSAL_LM"
+train:
+  seed: 42
+  output_dir: "runs/kivra-spark"
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  num_train_epochs: 3
+  max_steps: -1
+  learning_rate: 2.0e-4
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.03
+  logging_steps: 10
+  save_steps: 100
+  save_total_limit: 2
+  max_seq_length: 1024
+  packing: false
+  fp16: false
+  bf16: false
+  gradient_checkpointing: true
+  dataloader_num_workers: 0
+  report_to: []

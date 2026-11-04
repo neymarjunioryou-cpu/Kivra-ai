@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kivra"
+version = "0.1.0"
+description = "Kivra — small-footprint open-weight language models. Runnable scaffold for Qwen-based LoRA/QLoRA fine-tuning, evaluation, GGUF export, and local inference."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Kivra contributors" }]
+license = "MIT"
+keywords = ["llm", "fine-tuning", "lora", "qlora", "qwen", "gguf", "mobile"]
+
+dependencies = [
+    "PyYAML>=6.0",
+    "tqdm>=4.60",
+]
+
+[project.optional-dependencies]
+data = ["datasets>=2.14"]
+train = [
+    "torch>=2.3",
+    "transformers>=4.41",
+    "peft>=0.11",
+    "accelerate>=0.31",
+    "bitsandbytes>=0.43",
+    "sentencepiece>=0.20",
+]
+inference = [
+    "torch>=2.3",
+    "transformers>=4.41",
+    "sentencepiece>=0.20",
+]
+storage = [
+    "supabase>=2.0",
+    "dropbox>=11.0",
+    "google-api-python-client>=2.0",
+    "google-auth-oauthlib>=1.0",
+]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.8",
+    "rich>=13.0",
+]
+
+[tool.setuptools]
+packages = ["kivra", "kivra.data", "kivra.training", "kivra.eval", "kivra.inference", "kivra.storage"]
+
+[project.scripts]
+kivra-train = "scripts.train:main"
+kivra-evaluate = "scripts.evaluate:main"
+kivra-infer = "scripts.infer:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
